@@ -25,14 +25,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeData() {
         viewModel.photoData().observe(this, Observer { src ->
-            val floatRateUsd = src.nextPage
-            val floatRateGpb = src.photos.map { it.photographer }
+            val nexPage = src.nextPage
+            val photographer = src.photos.map { it.photographer }
             val imageUrl = src.photos.map { it.src.medium}
             Glide.with(this).load(imageUrl[ 0]).into(binding.imageView);
 
-            binding.labelDollar.text = floatRateUsd
+            binding.labelDollar.text = nexPage
 
-            binding.labelLibra.text = floatRateGpb.toString()
+            binding.labelLibra.text = photographer.toString()
 
         })
     }
