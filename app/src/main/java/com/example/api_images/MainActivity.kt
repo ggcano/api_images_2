@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+
 import com.example.api_images.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -12,8 +14,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
@@ -24,16 +24,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeData() {
-        viewModel.coinData().observe(this, Observer {
-            val floatRateUsd = it.coinBpi.usd.rateFloatDTO
-            val floatRateGpb = it.coinBpi.gpb.rateFloatDTO
-            val floatRateEur = it.coinBpi.eur.rateFloatDTO
+        viewModel.photoData().observe(this, Observer { src ->
+            val floatRateUsd = src.nextPage
+            val floatRateGpb = src.photos.map { it.photographer }
+            val imageUrl = src.photos.map { it.src.medium}
+            Glide.with(this).load(imageUrl[ 0]).into(binding.imageView);
 
+            binding.labelDollar.text = floatRateUsd
 
-            binding.labelDollar.text = "$floatRateUsd $"
-            binding.labelEuro.text = "$floatRateEur €"
-            binding.labelLibra.text= "$floatRateGpb €"
+            binding.labelLibra.text = floatRateGpb.toString()
 
         })
     }
+
+
 }

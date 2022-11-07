@@ -1,4 +1,4 @@
-package com.example.api_images.services
+package com.example.api_images.client
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,7 +11,7 @@ class RestClient {
     private val CONNECT_TIMEOUT = 20000
     private val WRITE_TIMEOUT = 20000
     private val READ_TIMEOUT = 20000
-    private val baseUrl = "https://api.coindesk.com/v1/"
+    private val baseUrl = "https://api.pexels.com/v1/"
 
     private lateinit var apiService: ApiService
 
