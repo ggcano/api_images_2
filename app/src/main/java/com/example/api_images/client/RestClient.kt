@@ -39,7 +39,7 @@ class RestClient {
         return apiService
     }
 
-    fun initServices (retrofit: Retrofit){
+    private fun initServices (retrofit: Retrofit){
         apiService = retrofit.create(ApiService::class.java)
     }
 
