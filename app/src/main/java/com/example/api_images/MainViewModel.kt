@@ -8,6 +8,7 @@ import com.example.api_images.client.Repo
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import retrofit2.http.Path
 
 class MainViewModel constructor(private val repo: Repo) : ViewModel() {
 
@@ -30,9 +31,9 @@ class MainViewModel constructor(private val repo: Repo) : ViewModel() {
     var job: Job? = null
     var responseListMLD: MutableLiveData<Response<Src>?> = MutableLiveData()
 
-    fun getCustomPost(token:String) {
+    fun getCustomPost(token:String,path: String) {
         viewModelScope.launch {
-            val response = repo.getFetch(token)
+            val response = repo.getFetch(token,path)
             responseListMLD.value = response
         }
     }

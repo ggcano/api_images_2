@@ -2,7 +2,7 @@ package com.example.api_images
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.SearchView
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -29,44 +29,34 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeData() {
-        viewModel.getCustomPost("563492ad6f917000010000016ee415c7e5144defbc009b1eae08ca1c")
+        binding.buttonSearch.setOnClickListener {
+            viewModel.getCustomPost(
+                "563492ad6f917000010000016ee415c7e5144defbc009b1eae08ca1c",
+                caughtStringEditText() ?: "Default"
+            )
 
-        viewModel.responseListMLD.observe(this, Observer { src ->
-            if (src!!.isSuccessful) {
-                val cuerpo = src.body()
-                val nexPage=  src.body()?.nextPage
-                binding.labelDollar.text = nexPage
-                binding.labelLibra.text = src.body()?.photos?.get(0)?.photographer.toString()
-                Glide.with(this).load(cuerpo?.photos?.get(0)?.src?.medium.toString())
-                 .into(binding.imageView)
+            viewModel.responseListMLD.observe(this, Observer { response ->
+                if (response!!.isSuccessful) {
+                    val body = response.body()
 
-            }else{
-                println(("Error in response from retrofit in MainActivity"))
-            }
-         /*   val nexPage = src.
-            val photographer = src.photos.map { it.photographer }
-            val imageUrl = src.photos.map { it.src.medium}
-            Glide.with(this).load(imageUrl[ 0]).into(binding.imageView)
 
-            binding.labelDollar.text = nexPage
+                    binding.photographer.text =
+                        response.body()?.photos?.get(0)?.photographer.toString()
+                    Glide.with(this).load(body?.photos?.get(0)?.src?.medium.toString())
+                        .into(binding.imageView)
 
-            binding.labelLibra.text = photographer.toString()*/
+                } else {
+                    println(("Error in response from retrofit in MainActivity"))
+                    Toast.makeText(this, "Error en Sevicio", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
 
-        })
+
     }
 
-
-    private fun searchQuery():String{
-        binding.searchTxt.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(p0: String?): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun onQueryTextChange(p0: String?): Boolean {
-                TODO("Not yet implemented")
-            }
-
-        })
-        return String()
+    private fun caughtStringEditText():String {
+        return binding.searchTxt.text.toString()
     }
+
 }

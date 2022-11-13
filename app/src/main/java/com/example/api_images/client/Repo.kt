@@ -2,6 +2,7 @@ package com.example.api_images.client
 
 import com.example.api_images.services.Src
 import retrofit2.Response
+import retrofit2.http.Query
 
 class Repo(private val retrofitService: ApiService?) {
 
@@ -27,8 +28,8 @@ class Repo(private val retrofitService: ApiService?) {
     }*/
 
 
-    suspend fun getFetch(token:String): Response<Src>? {
-        return retrofitService?.fetchPhotos(token)
+    suspend fun getFetch(token:String,query: String): Response<Src>? {
+        return retrofitService?.fetchPhotos(token,query)
     }
 
 
