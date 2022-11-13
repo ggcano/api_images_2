@@ -1,6 +1,8 @@
 package com.example.api_images.client
 
 import com.example.api_images.services.Src
+import com.example.api_images.servicesnew.Pexels
+import com.example.api_images.servicesnew.Photo2
 
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -17,6 +19,13 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Query("query") search: String
     ): Response<Src>
+
+    @GET("search?query=pedro")
+    suspend fun fetchListPhotos(
+        @Header("Authorization") token: String,
+        @Query("query") search: String
+    ): Response<Pexels>
+
 
     companion object {
         var retrofitService: ApiService? = null

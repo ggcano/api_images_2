@@ -52,9 +52,9 @@
         android:id="@+id/button_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="Buscar"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_txt" />
 
@@ -67,4 +67,24 @@
         app:layout_constraintStart_toStartOf="@+id/search_txt"
         app:layout_constraintTop_toTopOf="@+id/search_txt"
         app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
+
+    <Button
+        android:id="@+id/button_more_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Mas Resultados"
+        app:layout_constraintBottom_toTopOf="@+id/recycler_photos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_txt" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_photos"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_search" />
 </androidx.constraintlayout.widget.ConstraintLayout>
