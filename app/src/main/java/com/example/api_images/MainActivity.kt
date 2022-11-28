@@ -1,22 +1,42 @@
 package com.example.api_images
 
-import androidx.appcompat.app.AppCompatActivity
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.os.Environment.getExternalStorageDirectory
 import android.widget.Toast
+import androidx.annotation.Nullable
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.api_images.client.ApiService
 import com.example.api_images.client.Repo
-
 import com.example.api_images.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
+
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     lateinit var viewModel: MainViewModel
-    private val adapterLoompa = PhotosAdapter()
+    lateinit var ibitmap: Bitmap
+
+    private val adapterLoompa = PhotosAdapter() { position -> onListItemClick(position) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,8 +51,10 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, MyViewModelFactory(repo))[MainViewModel::class.java]
         observeData()
 
+
+
         setupRecyclerView()
-      adsadasdasda()
+        adsadasdasda()
     }
 
     private fun observeData() {
@@ -62,22 +84,126 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun adsadasdasda (){
+    private fun adsadasdasda() {
         binding.buttonMoreSearch.setOnClickListener {
-           // binding.recyclerPhotos.adapter = adapterLoompa
+            // binding.recyclerPhotos.adapter = adapterLoompa
             viewModel.getAllMovies(
                 "563492ad6f917000010000016ee415c7e5144defbc009b1eae08ca1c",
                 caughtStringEditText()
             )
+
             loadRecyclerView()
         }
 
     }
 
+ /*   private fun onListItemClick(position: String) {
+        val direct: File = File(Environment.getExternalStorageDirectory().toString() + "/DirName")
+
+        if (!direct.exists()) {
+            val wallpaperDirectory = File("/sdcard/DirName/")
+            wallpaperDirectory.mkdirs()
+        }
+
+        val file = File("/sdcard/DirName/", position)
+        if (file.exists()) {
+            file.delete()
+        }
+        try {
+            val out = FileOutputStream(file)
+            ibitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            out.flush()
+            out.close()
+
+            Toast.makeText(this, "File saved successfully!",
+                Toast.LENGTH_SHORT).show();
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }*/
+
+    private fun onListItemClick(position: String) {
+            downloadImage(position)
+    }
+
+
+    private fun downloadImage(imageURL: String) {
+        if (!verifyPermissions()!!) {
+            return
+        }
+        val dirPath =
+            Environment.getExternalStorageDirectory().absolutePath + "/" + "imagespexel" + "/"
+        val dir = File(dirPath)
+        val fileName = imageURL.substring(imageURL.lastIndexOf('/') + 1)
+        Glide.with(this)
+            .load(imageURL)
+           // .into(binding.imageView)
+            .into(object : CustomTarget<Drawable?>() {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    @Nullable transition: Transition<in Drawable?>?
+                ) {
+                    val bitmap = (resource as BitmapDrawable).bitmap
+                    Toast.makeText(this@MainActivity, "Saving Image...", Toast.LENGTH_SHORT).show()
+                    saveImage(bitmap, dir, fileName)
+                }
+
+                override fun onLoadCleared(@Nullable placeholder: Drawable?) {}
+                override fun onLoadFailed(@Nullable errorDrawable: Drawable?) {
+                    super.onLoadFailed(errorDrawable)
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Failed to Download Image! Please try again later.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+    }
+
+
+    private fun verifyPermissions(): Boolean? {
+
+        // This will return the current Status
+        val permissionExternalMemory =
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (permissionExternalMemory != PackageManager.PERMISSION_GRANTED) {
+            val STORAGE_PERMISSIONS = arrayOf<String>(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            // If permission not granted then ask for permission real time.
+            ActivityCompat.requestPermissions(this, STORAGE_PERMISSIONS, 1)
+            return false
+        }
+        return true
+    }
+
+    private fun saveImage(image: Bitmap, storageDir: File, imageFileName: String) {
+        //storageDir.mkdir()
+        var successDirCreated = false
+        val imageFile = File(storageDir, imageFileName)
+        if (!storageDir.exists() && successDirCreated) {
+            storageDir.mkdir()
+        }
+        if (successDirCreated ) {
+
+            try {
+                val fOut: OutputStream = FileOutputStream(imageFile)
+                image.compress(Bitmap.CompressFormat.JPEG, 100, fOut)
+                fOut.close()
+                Toast.makeText(this, "Image Saved!", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(this, "Error while saving image!", Toast.LENGTH_SHORT)
+                    .show()
+                e.printStackTrace()
+            }
+        } else {
+           // imageFile.absolutePath
+            Toast.makeText(this, "Failed to make folder!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     private fun loadRecyclerView() {
 
-                viewModel.responseListPhotos.observe(this, Observer { responsesss ->
+                viewModel.photos.observe(this, Observer { responsesss ->
                     if (responsesss !=null) {
                         adapterLoompa.setLoompaList(responsesss)
                     }else{
@@ -88,15 +214,34 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+/*
+  private fun onListItemClick(position: String) {
+
+        try {
+            val filePath = File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                position
+            )
+            val outputStream: OutputStream = FileOutputStream(filePath)
+            ibitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            outputStream.flush()
+            outputStream.close()
+            Toast.makeText(
+                this@MainActivity,
+                position + "Sucessfully saved in Download Folder",
+                Toast.LENGTH_SHORT
+            ).show()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+    }
+*/
+
+
     private fun caughtStringEditText():String {
         return binding.searchTxt.text.toString()
     }
-    private fun onListItemClick(position: Int) {/*
-        val intent = Intent(this, DetailActivity::class.java).apply {
-            putExtra(EXTRA_MESSAGE,position.toString())
-        }
-        startActivity(intent)*/
-    }
+
 
     private fun setupRecyclerView(){
         val layoutManager = LinearLayoutManager(this)

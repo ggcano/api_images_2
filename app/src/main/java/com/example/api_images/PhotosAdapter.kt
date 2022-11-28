@@ -5,20 +5,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.api_images.databinding.ItemListBinding
-import com.example.api_images.services.Photo
-import com.example.api_images.servicesnew.Pexels
 import com.example.api_images.servicesnew.Photo2
-import okhttp3.internal.notify
-import okhttp3.internal.notifyAll
 
-class PhotosAdapter (): RecyclerView.Adapter<MainViewHolder>() {
+class PhotosAdapter (private val onItemClicked: (positionString: String) -> Unit): RecyclerView.Adapter<MainViewHolder>() {
 
-    var oompaLoompaList = mutableListOf<Photo2>()
+    var photList = mutableListOf<Photo2>()
 
     fun setLoompaList(list: List<Photo2>,) {
-        this.oompaLoompaList = list.toMutableList()
-        oompaLoompaList.clear()
-        oompaLoompaList.addAll(list);
+        this.photList = list.toMutableList()
+        photList.clear()
+        photList.addAll(list);
 
        // notifyAll()
         notifyDataSetChanged()
@@ -35,15 +31,19 @@ class PhotosAdapter (): RecyclerView.Adapter<MainViewHolder>() {
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
 
-        val loompa = oompaLoompaList[position]
+        val loompa = photList[position]
         holder.binding.name.text = loompa.photographer
         holder.binding.txtId.text = loompa.id.toString()
+        holder.binding.buttonDownload.setOnClickListener {
+            val id = loompa.src2.original
+            onItemClicked(id)
+        }
         Glide.with(holder.itemView.context).load(loompa.src2.medium).into(holder.binding.imageview)
 
     }
 
     override fun getItemCount(): Int {
-        return oompaLoompaList.size
+        return photList.size
     }
 }
 

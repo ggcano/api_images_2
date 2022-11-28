@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Adrian Cano</string>
     <string name="textview">TextView</string>
+    <string name="busca_una_palabra">busca una palabra</string>
+    <string name="buscar">Buscar</string>
+    <string name="mas_resultados">Mas Resultados</string>
 </resources>
