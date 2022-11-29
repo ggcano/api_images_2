@@ -27,7 +27,7 @@ class MainViewModel constructor(private val repo: Repo) : ViewModel() {
         }
     }
 
-    fun getAllMovies(token:String,path: String) {
+    fun getAllPhotos(token:String, path: String) {
 
         viewModelScope.launch {
          val response = repo.getListPhotos(token, path)

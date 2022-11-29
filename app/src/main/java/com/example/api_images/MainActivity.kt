@@ -1,15 +1,12 @@
 package com.example.api_images
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.os.Environment.getExternalStorageDirectory
 import android.widget.Toast
 import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
@@ -23,9 +20,6 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.api_images.client.ApiService
 import com.example.api_images.client.Repo
 import com.example.api_images.databinding.ActivityMainBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -87,7 +81,7 @@ class MainActivity : AppCompatActivity() {
     private fun adsadasdasda() {
         binding.buttonMoreSearch.setOnClickListener {
             // binding.recyclerPhotos.adapter = adapterLoompa
-            viewModel.getAllMovies(
+            viewModel.getAllPhotos(
                 "563492ad6f917000010000016ee415c7e5144defbc009b1eae08ca1c",
                 caughtStringEditText()
             )
@@ -178,27 +172,32 @@ class MainActivity : AppCompatActivity() {
     private fun saveImage(image: Bitmap, storageDir: File, imageFileName: String) {
         //storageDir.mkdir()
         var successDirCreated = false
+
         val imageFile = File(storageDir, imageFileName)
+        val fOut: OutputStream = FileOutputStream(imageFile)
         if (!storageDir.exists() && successDirCreated) {
             storageDir.mkdir()
         }
-        if (successDirCreated ) {
+       // if (successDirCreated==false ) {
 
             try {
-                val fOut: OutputStream = FileOutputStream(imageFile)
+                if (storageDir.exists()) storageDir.delete()
                 image.compress(Bitmap.CompressFormat.JPEG, 100, fOut)
+                storageDir.createNewFile()
+                fOut.flush()
                 fOut.close()
+
+                //fOut.close()
                 Toast.makeText(this, "Image Saved!", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 Toast.makeText(this, "Error while saving image!", Toast.LENGTH_SHORT)
                     .show()
                 e.printStackTrace()
             }
-        } else {
-           // imageFile.absolutePath
-            Toast.makeText(this, "Failed to make folder!", Toast.LENGTH_SHORT).show()
-        }
+
     }
+
+
 
 
     private fun loadRecyclerView() {
@@ -212,6 +211,24 @@ class MainActivity : AppCompatActivity() {
                 })
 
 
+    }
+    fun saveToExternalStorage() {
+        val fullPath = Environment.getExternalStorageDirectory().absolutePath + "/directoryName"
+        try {
+            val dir = File(fullPath)
+            if (!dir.exists()) {
+                dir.mkdirs()
+            }
+            var fOut: OutputStream? = null
+            val file = File(fullPath, "fileName.jpg")
+            if (file.exists()) file.delete()
+            file.createNewFile()
+            fOut = FileOutputStream(file)
+            fOut.flush()
+            fOut.close()
+        } catch (e: java.lang.Exception) {
+            Toast.makeText(this, "Failed to make folder!", Toast.LENGTH_SHORT).show()
+        }
     }
 
 /*
