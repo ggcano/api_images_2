@@ -18,9 +18,8 @@ class MainViewModel constructor(private val repo: Repo) : ViewModel() {
     private val _photos = MutableLiveData<List<Photo2>>(emptyList())
     val photos:LiveData<List<Photo2>> get()= _photos
 
-    var responseListPhotos:  MutableLiveData<List<Photo2>> = MutableLiveData()
 
-    fun getCustomPost(token:String,path: String) {
+    fun getPhotoAndPhotographer(token:String, path: String) {
         viewModelScope.launch {
             val response = repo.getFetch(token,path)
             responseListMLD.value = response
@@ -28,10 +27,8 @@ class MainViewModel constructor(private val repo: Repo) : ViewModel() {
     }
 
     fun getAllPhotos(token:String, path: String) {
-
         viewModelScope.launch {
          val response = repo.getListPhotos(token, path)
-            //responseListPhotos.value = response?.body()?.photo2s
         _photos.value = response!!.body()!!.photo2s
         }
     }

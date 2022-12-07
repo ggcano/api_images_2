@@ -37,6 +37,7 @@ class PhotosAdapter (private val onItemClicked: (positionString: String) -> Unit
         holder.binding.buttonDownload.setOnClickListener {
             val id = loompa.src2.original
             onItemClicked(id)
+
         }
         Glide.with(holder.itemView.context).load(loompa.src2.medium).into(holder.binding.imageview)
 
