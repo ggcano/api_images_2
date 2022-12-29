@@ -15,14 +15,14 @@ import retrofit2.http.Query
 
 
 interface ApiService {
-
+//search/?page=2&per_page=15&query=pedro
     @GET("search?query=name&per_page=1")
     suspend fun fetchPhotos(
         @Header("Authorization") token: String,
         @Query("query") search: String
     ): Response<Src>
-
-    @GET("search?query=pedro")
+    //https://api.pexels.com/v1/search/?page=2&per_page=15&query=china"
+    @GET("search/?page=1&per_page=150&query=china")
     suspend fun fetchListPhotos(
         @Header("Authorization") token: String,
         @Query("query") search: String

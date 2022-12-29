@@ -1,4 +1,4 @@
-package com.example.api_images
+package com.example.api_images.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

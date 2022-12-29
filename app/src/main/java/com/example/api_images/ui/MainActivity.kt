@@ -1,4 +1,4 @@
-package com.example.api_images
+package com.example.api_images.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.example.api_images.PhotosAdapter
+import com.example.api_images.R
 import com.example.api_images.client.ApiService
 import com.example.api_images.client.Repo
 import com.example.api_images.databinding.ActivityMainBinding
@@ -82,14 +84,18 @@ class MainActivity : AppCompatActivity() {
                 "563492ad6f917000010000016ee415c7e5144defbc009b1eae08ca1c",
                 caughtStringEditText()
             )
-
             loadRecyclerView()
+            binding.textViewTest.text = viewModel.showFilm(
+                "563492ad6f917000010000016ee415c7e5144defbc009b1eae08ca1c",
+                binding.searchTxt.text.toString()
+            ).toString()
         }
+
 
     }
 
     private fun onListItemClick(position: String) {
-            downloadImage(position)
+        downloadImage(position)
         Glide.with(this)
             .load(R.drawable.descargajpg)
             .into(binding.imageView)
@@ -98,7 +104,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun downloadImage(imageURL: String) {
-      if (!verifyPermissions()) {
+        if (!verifyPermissions()) {
             return
         }
         val dirPath =
@@ -107,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         val fileName = imageURL.substring(imageURL.lastIndexOf('/') + 1)
         Glide.with(this)
             .load(imageURL)
-           // .into(binding.imageView)
+            // .into(binding.imageView)
             .into(object : CustomTarget<Drawable?>() {
                 override fun onResourceReady(
                     resource: Drawable,
@@ -122,7 +128,6 @@ class MainActivity : AppCompatActivity() {
                         e.printStackTrace()
                     }
                 }
-
 
 
                 override fun onLoadCleared(@Nullable placeholder: Drawable?) {}
@@ -153,52 +158,46 @@ class MainActivity : AppCompatActivity() {
 
     private fun saveImage(image: Bitmap, storageDir: File, imageFileName: String) {
         storageDir.mkdir()
-        var successDirCreated = false
 
         val imageFile = File(storageDir, imageFileName)
         val fOut: OutputStream = FileOutputStream(imageFile)
-       /* if (!storageDir.exists() && successDirCreated) {
-            storageDir.mkdir()
-        }*/
-       // if (successDirCreated==false ) {
 
-           try {
-             //  if (storageDir.exists()) storageDir.delete()
-               image.compress(Bitmap.CompressFormat.JPEG, 100, fOut)
-               storageDir.createNewFile()
-               fOut.flush()
-               fOut.close()
+        try {
 
-               Toast.makeText(this, "Image Saved!", Toast.LENGTH_SHORT).show()
-           } catch (e: Exception) {
-               Toast.makeText(this, "Error while saving image!", Toast.LENGTH_SHORT)
-                   .show()
-               e.printStackTrace()
-           }
-       }
+            image.compress(Bitmap.CompressFormat.JPEG, 100, fOut)
+            storageDir.createNewFile()
+            fOut.flush()
+            fOut.close()
 
+            Toast.makeText(this, "Image Saved!", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error while saving image!", Toast.LENGTH_SHORT)
+                .show()
+            e.printStackTrace()
+        }
+    }
 
 
     private fun loadRecyclerView() {
 
-                viewModel.photos.observe(this, Observer { response ->
-                    if (response !=null) {
-                        adapterPhotos.setLoompaList(response)
-                    }else{
-                        println("error in response de recyclerview")
-                    }
-                })
+        viewModel.photos.observe(this, Observer { response ->
+            if (response != null) {
+                adapterPhotos.setLoompaList(response)
+            } else {
+                println("error in response de recyclerview")
+            }
+        })
 
 
     }
 
 
-    private fun caughtStringEditText():String {
+    private fun caughtStringEditText(): String {
         return binding.searchTxt.text.toString()
     }
 
 
-    private fun setupRecyclerView(){
+    private fun setupRecyclerView() {
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerPhotos.layoutManager = layoutManager
 

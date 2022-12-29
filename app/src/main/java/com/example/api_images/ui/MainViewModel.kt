@@ -1,11 +1,10 @@
-package com.example.api_images
+package com.example.api_images.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.api_images.services.Src
 import com.example.api_images.client.Repo
+import com.example.api_images.services.Photo
+import com.example.api_images.servicesnew.Pexels
 import com.example.api_images.servicesnew.Photo2
 import kotlinx.coroutines.*
 import retrofit2.Response
@@ -15,8 +14,11 @@ class MainViewModel constructor(private val repo: Repo) : ViewModel() {
     private var job: Job? = null
     var responseListMLD: MutableLiveData<Response<Src>?> = MutableLiveData()
 
-    private val _photos = MutableLiveData<List<Photo2>>(emptyList())
+    private val _photos = MutableLiveData<List<Photo2>>()
+    private val _photos33 = MutableLiveData<Photo2>()
     val photos:LiveData<List<Photo2>> get()= _photos
+    val movieList = MutableLiveData<String>()
+
 
 
     fun getPhotoAndPhotographer(token:String, path: String) {
@@ -29,7 +31,7 @@ class MainViewModel constructor(private val repo: Repo) : ViewModel() {
     fun getAllPhotos(token:String, path: String) {
         viewModelScope.launch {
          val response = repo.getListPhotos(token, path)
-        _photos.value = response!!.body()!!.photo2s
+        _photos.value = response?.body()?.photo2s
         }
     }
 
@@ -41,6 +43,23 @@ class MainViewModel constructor(private val repo: Repo) : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         job?.cancel()
+    }
+
+    fun showFilm(token:String, path: String) {
+        job = CoroutineScope(Dispatchers.IO).launch {
+            val response = repo.getListPhotos(token, path)
+            withContext(Dispatchers.Main) {
+                if (response != null) {
+                    if (response.isSuccessful) {
+                        movieList.postValue(response.body()?.nextPage)
+
+                    } else {
+                        println("Error en showFilm")
+                    }
+                }
+            }
+        }
+
     }
 
 }

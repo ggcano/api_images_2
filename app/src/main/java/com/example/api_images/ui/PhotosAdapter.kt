@@ -7,20 +7,16 @@ import com.bumptech.glide.Glide
 import com.example.api_images.databinding.ItemListBinding
 import com.example.api_images.servicesnew.Photo2
 
-class PhotosAdapter (private val onItemClicked: (positionString: String) -> Unit): RecyclerView.Adapter<MainViewHolder>() {
+class PhotosAdapter(private val onItemClicked: (positionString: String) -> Unit) :
+    RecyclerView.Adapter<MainViewHolder>() {
 
     var photList = mutableListOf<Photo2>()
 
-    fun setLoompaList(list: List<Photo2>,) {
+    fun setLoompaList(list: List<Photo2>) {
         this.photList = list.toMutableList()
         photList.clear()
-        photList.addAll(list);
-
-       // notifyAll()
+        photList.addAll(list)
         notifyDataSetChanged()
-
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
