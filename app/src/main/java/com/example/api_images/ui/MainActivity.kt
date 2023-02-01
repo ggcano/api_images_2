@@ -44,51 +44,23 @@ class MainActivity : AppCompatActivity() {
         val repo = Repo(retrofitService)
         binding.recyclerPhotos.adapter = adapterPhotos
         viewModel = ViewModelProvider(this, MyViewModelFactory(repo))[MainViewModel::class.java]
-        observeData()
 
         setupRecyclerView()
         setupSearchMorePhotos()
-    }
-
-    private fun observeData() {
-        binding.buttonSearch.setOnClickListener {
-            viewModel.getPhotoAndPhotographer(
-                "563492ad6f917000010000016ee415c7e5144defbc009b1eae08ca1c",
-                caughtStringEditText()
-            )
-
-            viewModel.responseListMLD.observe(this, Observer { response ->
-                if (response!!.isSuccessful) {
-                    val body = response.body()
-
-
-                    binding.photographer.text =
-                        response.body()?.photos?.get(0)?.photographer.toString()
-                    Glide.with(this).load(body?.photos?.get(0)?.src?.medium.toString())
-                        .into(binding.imageView)
-
-                } else {
-                    println(("Error in response from retrofit in MainActivity"))
-                    Toast.makeText(this, "Error en Sevicio", Toast.LENGTH_SHORT).show()
-                }
-            })
-        }
-
 
     }
+
+
 
     private fun setupSearchMorePhotos() {
         binding.buttonMoreSearch.setOnClickListener {
             // binding.recyclerPhotos.adapter = adapterLoompa
             viewModel.getAllPhotos(
-                "563492ad6f917000010000016ee415c7e5144defbc009b1eae08ca1c",
                 caughtStringEditText()
             )
             loadRecyclerView()
-            binding.textViewTest.text = viewModel.showFilm(
-                "563492ad6f917000010000016ee415c7e5144defbc009b1eae08ca1c",
-                binding.searchTxt.text.toString()
-            ).toString()
+            exampleObserveText()
+            viewModel.showFilm(caughtStringEditText())
         }
 
 
@@ -179,7 +151,6 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun loadRecyclerView() {
-
         viewModel.photos.observe(this, Observer { response ->
             if (response != null) {
                 adapterPhotos.setLoompaList(response)
@@ -189,6 +160,13 @@ class MainActivity : AppCompatActivity() {
         })
 
 
+    }
+
+    private fun exampleObserveText(){
+        viewModel.movieList.observe(this,Observer{
+            binding.photographer.text = it.toString()
+
+        })
     }
 
 

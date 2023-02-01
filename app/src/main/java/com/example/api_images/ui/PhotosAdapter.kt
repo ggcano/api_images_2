@@ -27,15 +27,16 @@ class PhotosAdapter(private val onItemClicked: (positionString: String) -> Unit)
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
 
-        val loompa = photList[position]
-        holder.binding.name.text = loompa.photographer
-        holder.binding.txtId.text = loompa.id.toString()
+        val photoItem = photList[position]
+        holder.binding.name.text = photoItem.photographer
+        holder.binding.txtId.text = photoItem.id.toString()
         holder.binding.buttonDownload.setOnClickListener {
-            val id = loompa.src2.original
+            val id = photoItem.src2.original
             onItemClicked(id)
 
         }
-        Glide.with(holder.itemView.context).load(loompa.src2.medium).into(holder.binding.imageview)
+        Glide.with(holder.itemView.context).load(photoItem.src2.medium)
+            .into(holder.binding.imageview)
 
     }
 
