@@ -40,7 +40,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/purple_200"
+        android:background="@color/teal_200"
         android:hint="@string/busca_una_palabra"
         android:textAlignment="center"
         android:selectAllOnFocus="false"
@@ -49,12 +49,12 @@
         app:layout_constraintTop_toBottomOf="@+id/photographer" />
 
     <Button
-        android:id="@+id/button_search"
+        android:id="@+id/btn_pass_pag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="@string/buscar"
+        android:text="OTRA PANTALLA"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_txt" />
 
@@ -72,12 +72,11 @@
         android:id="@+id/button_more_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         android:text="@string/mas_resultados"
-        app:layout_constraintBottom_toTopOf="@+id/recycler_photos"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_pass_pag"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_txt" />
+        app:layout_constraintStart_toEndOf="@+id/btn_pass_pag"
+        app:layout_constraintTop_toTopOf="@+id/btn_pass_pag" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_photos"
@@ -86,7 +85,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_search" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_pass_pag" />
 
     <TextView
         android:id="@+id/textView_test"

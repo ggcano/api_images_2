@@ -1,6 +1,7 @@
 package com.example.api_images.ui
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity() {
 
         setupRecyclerView()
         setupSearchMorePhotos()
+        goToActivity2()
 
     }
 
@@ -174,6 +176,12 @@ class MainActivity : AppCompatActivity() {
         return binding.searchTxt.text.toString()
     }
 
+    private fun goToActivity2 (){
+        binding.btnPassPag.setOnClickListener {
+            val intento1 = Intent(this, MainActivity2::class.java)
+            startActivity(intento1)
+        }
+    }
 
     private fun setupRecyclerView() {
         val layoutManager = LinearLayoutManager(this)
